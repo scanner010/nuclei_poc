@@ -1,5 +1,4 @@
 id: barco-clickshare-default-login
-
 info:
   name: Barco ClickShare - Default Login
   author: ritikchaddha
@@ -9,14 +8,35 @@ info:
   classification:
     cpe: cpe:2.3:o:barco:clickshare_cs-100_huddle_firmware:*:*:*:*:*:*:*:*
   metadata:
+    runzero-match: service["http.head.setCookie"] contains "ClickShareSession"
     max-request: 3
-    vendor: barco
     product: clickshare_cs-100_huddle_firmware
-    shodan-query: "ClickShareSession"
-  tags: default-login,barco,clickshare
-
+    shodan-query: ClickShareSession
+    vendor: barco
+  tags: barco,clickshare,default-login,vuln
 http:
-  - raw:
+  - attack: pitchfork
+    extractors:
+      - group: 1
+        internal: true
+        name: token
+        part: body
+        regex:
+          - ="csrf_protection_token" value="([0-9a-z]+)" \/>
+        type: regex
+    matchers:
+      - condition: and
+        dsl:
+          - status_code_2 == 303 || status_code_2 == 302
+          - contains(body_3, "ClickShare Configuration Wizard")
+          - contains(location_2, "/dashboard")
+        type: dsl
+    payloads:
+      password:
+        - admin
+      username:
+        - admin
+    raw:
       - |
         GET /login HTTP/1.1
         Host: {{Hostname}}
@@ -29,27 +49,3 @@ http:
       - |
         GET /configuration_wizard HTTP/1.1
         Host: {{Hostname}}
-
-    attack: pitchfork
-    payloads:
-      username:
-        - admin
-      password:
-        - admin
-    matchers:
-      - type: dsl
-        dsl:
-          - 'status_code_2 == 303 || status_code_2 == 302'
-          - 'contains(body_3, "ClickShare Configuration Wizard")'
-          - 'contains(location_2, "/dashboard")'
-        condition: and
-
-    extractors:
-      - type: regex
-        part: body
-        name: token
-        group: 1
-        regex:
-          - '="csrf_protection_token" value="([0-9a-z]+)" \/>'
-        internal: true
-# digest: 490a0046304402203cbc4723d8d13adeaedd990279d65b460bf1e1f9ebad9b6bace0d8ffbc55df5c022015433f22c4e8b5eb7147f00999b75e301f011643ee71c42118e867ea1ff2f0df:922c64590222798bb761d5b6d8e72950

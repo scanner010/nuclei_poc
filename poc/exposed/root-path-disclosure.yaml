@@ -9,7 +9,7 @@ info:
   metadata:
     verified: true
     max-request: 4
-  tags: misconfig,exposure,info-leak,listing,lfr
+  tags: misconfig,exposure,info-leak,listing,lfr,vuln
 
 http:
   - method: GET
@@ -20,6 +20,7 @@ http:
       - "{{BaseURL}}/app/webroot/files/kcfinder/files/home/000~ROOT~000/etc/passwd"
 
     stop-at-first-match: true
+
     matchers-condition: and
     matchers:
       - type: regex
@@ -35,4 +36,4 @@ http:
       - type: status
         status:
           - 200
-# digest: 4b0a004830460221009b4e9101d1f7d2ca2655255b58fa8200358289497f1a6093cb49884816de63b6022100f2a74c6c7829b157266e4cd4ddd96d1cffdc08ab963db579b0d18b3697d16919:922c64590222798bb761d5b6d8e72950
+

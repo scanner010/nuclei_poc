@@ -11,11 +11,12 @@ info:
   classification:
     cpe: cpe:2.3:a:n8n:n8n:*:*:*:*:*:node.js:*:*
   metadata:
+    runzero-match: any(each(service["html.titles"]), {# matches "(?i)n8n.io*workflow automation"})
     max-request: 1
     vendor: n8n
     product: n8n
     shodan-query: http.html:"N8n"
-  tags: n8n,config,exposed
+  tags: n8n,config,exposed,vuln
 
 http:
   - raw:
@@ -44,4 +45,4 @@ http:
       - type: status
         status:
           - 200
-# digest: 490a0046304402202b3d44e10fe071c0790f5d46ba0f694382dbd3a54b2ea6213278fb455971750102204037dc062a4dd501383c4d267fdb1de110af6b0e5f7e82c86c4b6425a4aa73f1:922c64590222798bb761d5b6d8e72950
+

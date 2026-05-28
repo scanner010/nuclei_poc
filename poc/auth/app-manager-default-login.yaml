@@ -1,5 +1,4 @@
 id: app-manager-default-login
-
 info:
   name: ManageEngine Applications Manager - Default Credentials
   author: 0midC13
@@ -9,21 +8,19 @@ info:
   reference:
     - https://www.manageengine.com/products/applications_manager/
   metadata:
+    runzero-match: any(each(service["html.titles"]), {# matches "Applications Manager Login Screen"})
+    max-request: 1
     shodan-query: title:"Applications Manager Login Screen"
     verified: true
-    max-request: 1
-  tags: default-login,manageengine,zoho
-
+  tags: default-login,manageengine,vuln,zoho
 variables:
-  username: "admin"
-  password: "admin"
-
+  password: admin
+  username: admin
 http:
   - raw:
       - |
         GET /index.do HTTP/1.1
         Host: {{Hostname}}
-
   - raw:
       - |
         POST /j_security_check HTTP/1.1
@@ -33,19 +30,16 @@ http:
         Referer: {{RootURL}}/index.do
 
         clienttype=html&webstart=&j_username=admin&ScreenWidth=1280&ScreenHeight=709&username={{username}}&j_password={{password}}
-
-  - raw:
+  - matchers:
+      - condition: and
+        part: body
+        type: word
+        words:
+          - Super Administrator
+          - Add Application
+    matchers-condition: and
+    raw:
       - |
         GET /showresource.do?group=All&method=showResourceTypes&monitor_viewtype=categoryview HTTP/1.1
         Host: {{Hostname}}
         Referer: {{RootURL}}/j_security_check
-
-    matchers-condition: and
-    matchers:
-      - type: word
-        part: body
-        words:
-          - "Super Administrator"
-          - "Add Application"
-        condition: and
-# digest: 4b0a00483046022100dbbba72fef683ecf1b201589665d52b6db4dba0ee74ebde6e73a185f3f20b60c022100ebc65e5a6b5cd981b77bdd3c81b44150477969bb489a61326378f5140fc23f38:922c64590222798bb761d5b6d8e72950
